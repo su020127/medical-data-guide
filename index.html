@@ -3,641 +3,974 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>의료 비정형 데이터 분류 가이드</title>
+<title>의료 데이터 분류 가이드 — 4조</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700&family=IBM+Plex+Mono:wght@400;500&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-:root {
-  --bg: #f7f6f2;
-  --surface: #ffffff;
-  --border: #e2e0d8;
-  --border-strong: #c8c5bb;
-  --text: #1a1917;
-  --text-muted: #6b6963;
-  --text-faint: #9e9b94;
-  --s1-bg: #fff0ee; --s1-text: #8c2b1e; --s1-border: #f5b8b0;
-  --s2-bg: #fff8ec; --s2-text: #7a4a00; --s2-border: #f5d48a;
-  --s3-bg: #edf4ff; --s3-text: #1a4a8a; --s3-border: #9fc4f5;
-  --s4-bg: #edf7ee; --s4-text: #1a5c20; --s4-border: #96d89a;
-  --blue-bg: #edf4ff; --blue-text: #1a4a8a;
-  --teal-bg: #e6f7f2; --teal-text: #0d5c45;
-  --purple-bg: #f0eeff; --purple-text: #4a3db0;
-  --coral-bg: #fff0ee; --coral-text: #8c2b1e;
-  --amber-bg: #fff8ec; --amber-text: #7a4a00;
-  --pink-bg: #feeef5; --pink-text: #8c1f54;
-  --green-bg: #edf7ee; --green-text: #1a5c20;
-}
+  :root {
+    --navy: #0d1f3c;
+    --navy-mid: #1a3c6e;
+    --blue: #2563eb;
+    --blue-light: #3b82f6;
+    --blue-pale: #eff6ff;
+    --teal: #0d9488;
+    --teal-pale: #f0fdfa;
+    --red: #c00000;
+    --red-pale: #fef2f2;
+    --orange: #d97706;
+    --orange-pale: #fffbeb;
+    --green: #16a34a;
+    --green-pale: #f0fdf4;
+    --gray-50: #f8fafc;
+    --gray-100: #f1f5f9;
+    --gray-200: #e2e8f0;
+    --gray-400: #94a3b8;
+    --gray-600: #475569;
+    --gray-800: #1e293b;
+    --white: #ffffff;
+    --radius-sm: 6px;
+    --radius-md: 10px;
+    --radius-lg: 16px;
+  }
 
-body {
-  font-family: 'Noto Sans KR', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  font-size: 13px;
-  line-height: 1.6;
-  min-height: 100vh;
-}
+  html { scroll-behavior: smooth; }
 
-/* ─── Header ─── */
-.header {
-  background: var(--surface);
-  border-bottom: 1px solid var(--border);
-  padding: 20px 24px 0;
-  position: sticky;
-  top: 0;
-  z-index: 100;
-}
-.header-top {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin-bottom: 14px;
-}
-.header-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--text);
-  letter-spacing: -0.02em;
-}
-.header-sub {
-  font-size: 11px;
-  color: var(--text-faint);
-  font-family: 'IBM Plex Mono', monospace;
-}
+  body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background: var(--gray-50);
+    color: var(--gray-800);
+    line-height: 1.7;
+    font-size: 15px;
+  }
 
-/* ─── Tabs ─── */
-.tabs {
-  display: flex;
-  gap: 0;
-}
-.tab {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
-  background: none;
-  border: none;
-  border-bottom: 2px solid transparent;
-  padding: 8px 16px;
-  cursor: pointer;
-  transition: color .15s, border-color .15s;
-  white-space: nowrap;
-}
-.tab.active { color: var(--text); border-bottom-color: var(--text); }
-.tab:hover:not(.active) { color: var(--text); }
+  /* ── NAV ── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: var(--navy);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 2rem;
+    height: 56px;
+    border-bottom: 3px solid var(--blue);
+  }
+  .nav-brand {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: 14px;
+    color: var(--white); letter-spacing: 0.05em;
+    margin-right: 2rem; white-space: nowrap;
+  }
+  .nav-brand span { color: var(--blue-light); }
+  .nav-links { display: flex; gap: 0; overflow-x: auto; flex: 1; }
+  .nav-links a {
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    font-size: 13px; font-weight: 500;
+    padding: 0 1rem; height: 56px;
+    display: flex; align-items: center;
+    white-space: nowrap;
+    transition: color 0.15s, background 0.15s;
+    border-bottom: 3px solid transparent; margin-bottom: -3px;
+  }
+  .nav-links a:hover { color: var(--white); background: rgba(255,255,255,0.05); }
+  .nav-links a.active { color: var(--blue-light); border-bottom-color: var(--blue-light); }
+  .nav-badge {
+    margin-left: auto;
+    background: var(--blue); color: var(--white);
+    font-size: 11px; font-weight: 700;
+    padding: 3px 10px; border-radius: 20px;
+    letter-spacing: 0.04em; white-space: nowrap;
+  }
 
-/* ─── Content ─── */
-.content { padding: 20px 24px 32px; }
-.panel { display: none; }
-.panel.active { display: block; }
+  /* ── HERO ── */
+  .hero {
+    background: var(--navy);
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      90deg, rgba(37,99,235,0.04) 0, rgba(37,99,235,0.04) 1px, transparent 1px, transparent 60px
+    ),
+    repeating-linear-gradient(
+      0deg, rgba(37,99,235,0.04) 0, rgba(37,99,235,0.04) 1px, transparent 1px, transparent 60px
+    );
+  }
+  .hero-inner { position: relative; max-width: 800px; margin: 0 auto; }
+  .hero-tag {
+    display: inline-block;
+    background: rgba(37,99,235,0.2); color: var(--blue-light);
+    font-size: 12px; font-weight: 700; letter-spacing: 0.1em;
+    padding: 4px 14px; border-radius: 20px;
+    border: 1px solid rgba(59,130,246,0.4);
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: clamp(28px, 5vw, 48px);
+    color: var(--white); line-height: 1.15;
+    margin-bottom: 0.5rem;
+  }
+  .hero h1 span { color: var(--blue-light); }
+  .hero-sub {
+    color: rgba(255,255,255,0.55);
+    font-size: 14px; margin-bottom: 2rem;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .hero-desc {
+    color: rgba(255,255,255,0.75);
+    font-size: 15px; max-width: 580px; margin: 0 auto 2.5rem;
+    line-height: 1.8;
+  }
+  .hero-chips { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+  .hero-chip {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(255,255,255,0.7);
+    font-size: 12px; padding: 5px 14px; border-radius: 20px;
+  }
 
-/* ─── Section label ─── */
-.slabel {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  margin-bottom: 10px;
-  margin-top: 20px;
-}
-.slabel:first-child { margin-top: 0; }
+  /* ── LAYOUT ── */
+  .container { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+  .section { padding: 4rem 0; }
+  .section-alt { background: var(--white); }
 
-/* ─── Data type cards ─── */
-.dtype-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 14px 16px;
-  margin-bottom: 8px;
-}
-.dtype-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 10px;
-}
-.dtype-icon {
-  width: 30px; height: 30px;
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-.dtype-name { font-size: 13px; font-weight: 700; color: var(--text); }
-.dtype-en   { font-size: 11px; color: var(--text-faint); font-family: 'IBM Plex Mono', monospace; }
+  .section-header { margin-bottom: 2.5rem; }
+  .section-eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; font-weight: 500; letter-spacing: 0.15em;
+    color: var(--blue); text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  .section-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900; font-size: clamp(22px, 3vw, 32px);
+    color: var(--navy); line-height: 1.2;
+  }
+  .section-title span { color: var(--blue); }
+  .section-desc { color: var(--gray-600); font-size: 15px; margin-top: 0.75rem; line-height: 1.8; }
+  .divider { width: 40px; height: 3px; background: var(--blue); margin: 1rem 0; border-radius: 2px; }
 
-.tags { display: flex; flex-wrap: wrap; gap: 5px; }
-.tag {
-  font-size: 11px; font-weight: 500;
-  padding: 3px 9px;
-  border-radius: 4px;
-}
+  /* ── DATA TYPE CARDS ── */
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.25rem;
+  }
+  .type-card {
+    background: var(--white);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    position: relative; overflow: hidden;
+  }
+  .type-card:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(0,0,0,0.08); }
+  .type-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--card-accent, var(--blue));
+  }
+  .card-icon {
+    width: 46px; height: 46px; border-radius: var(--radius-md);
+    background: var(--card-pale, var(--blue-pale));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; margin-bottom: 1rem;
+  }
+  .card-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.12em;
+    color: var(--card-accent, var(--blue));
+    text-transform: uppercase; margin-bottom: 0.3rem;
+  }
+  .card-title { font-weight: 700; font-size: 16px; color: var(--navy); margin-bottom: 0.3rem; }
+  .card-en { font-size: 12px; color: var(--gray-400); margin-bottom: 0.8rem; }
+  .card-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    background: var(--gray-100); color: var(--gray-600);
+    font-size: 12px; padding: 3px 10px; border-radius: 20px;
+    border: 1px solid var(--gray-200);
+  }
 
-/* ─── Level cards ─── */
-.level-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
-  margin-bottom: 16px;
-}
-.level-card {
-  border-radius: 8px;
-  padding: 12px 14px;
-  border: 1px solid;
-}
-.level-badge {
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  font-family: 'IBM Plex Mono', monospace;
-  margin-bottom: 4px;
-}
-.level-name { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-.level-desc { font-size: 11px; line-height: 1.55; }
+  /* ── GRADE SYSTEM ── */
+  .grade-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; margin-bottom: 2rem; }
+  .grade-card {
+    border-radius: var(--radius-lg); padding: 1.5rem;
+    border: 2px solid transparent; position: relative;
+  }
+  .grade-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700; font-size: 13px;
+    padding: 5px 14px; border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  .grade-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .grade-name { font-weight: 700; font-size: 18px; margin-bottom: 0.25rem; }
+  .grade-sub { font-size: 13px; opacity: 0.75; margin-bottom: 0.8rem; }
+  .grade-desc { font-size: 14px; line-height: 1.65; }
 
-.lc-s1 { background: var(--s1-bg); border-color: var(--s1-border); }
-.lc-s1 .level-badge, .lc-s1 .level-name, .lc-s1 .level-desc { color: var(--s1-text); }
-.lc-s2 { background: var(--s2-bg); border-color: var(--s2-border); }
-.lc-s2 .level-badge, .lc-s2 .level-name, .lc-s2 .level-desc { color: var(--s2-text); }
-.lc-s3 { background: var(--s3-bg); border-color: var(--s3-border); }
-.lc-s3 .level-badge, .lc-s3 .level-name, .lc-s3 .level-desc { color: var(--s3-text); }
-.lc-s4 { background: var(--s4-bg); border-color: var(--s4-border); }
-.lc-s4 .level-badge, .lc-s4 .level-name, .lc-s4 .level-desc { color: var(--s4-text); }
+  .grade-s1 { background: #fff5f5; border-color: #fca5a5; }
+  .grade-s1 .grade-badge { background: #fee2e2; color: #991b1b; }
+  .grade-s1 .grade-dot { background: #ef4444; }
+  .grade-s1 .grade-name { color: #7f1d1d; }
 
-/* ─── Table ─── */
-.tbl-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-th {
-  text-align: left;
-  font-weight: 700;
-  font-size: 10px;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-}
-td {
-  padding: 10px 14px;
-  border-bottom: 1px solid var(--border);
-  color: var(--text);
-  vertical-align: top;
-  line-height: 1.5;
-}
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--bg); }
-td strong { font-weight: 700; }
-td small { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
+  .grade-s2 { background: #fff7ed; border-color: #fdba74; }
+  .grade-s2 .grade-badge { background: #ffedd5; color: #92400e; }
+  .grade-s2 .grade-dot { background: #f97316; }
+  .grade-s2 .grade-name { color: #7c2d12; }
 
-.badge {
-  display: inline-block;
-  font-size: 10px; font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-family: 'IBM Plex Mono', monospace;
-  white-space: nowrap;
-}
-.badge-s1 { background: var(--s1-bg); color: var(--s1-text); }
-.badge-s2 { background: var(--s2-bg); color: var(--s2-text); }
-.badge-s3 { background: var(--s3-bg); color: var(--s3-text); }
-.badge-s4 { background: var(--s4-bg); color: var(--s4-text); }
+  .grade-s3 { background: #fefce8; border-color: #fde047; }
+  .grade-s3 .grade-badge { background: #fef9c3; color: #713f12; }
+  .grade-s3 .grade-dot { background: #eab308; }
+  .grade-s3 .grade-name { color: #713f12; }
 
-/* ─── Process flow ─── */
-.flow { display: flex; flex-direction: column; gap: 0; margin-bottom: 24px; }
-.flow-row { display: flex; gap: 14px; }
-.flow-spine { display: flex; flex-direction: column; align-items: center; width: 32px; flex-shrink: 0; }
-.flow-node {
-  width: 32px; height: 32px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700;
-  font-family: 'IBM Plex Mono', monospace;
-  flex-shrink: 0;
-}
-.flow-spine-line { width: 1px; background: var(--border-strong); flex: 1; min-height: 16px; }
-.flow-body { flex: 1; padding-bottom: 20px; padding-top: 4px; }
-.flow-title { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 5px; }
-.flow-desc  { font-size: 12px; color: var(--text-muted); line-height: 1.65; }
+  .grade-s4 { background: #f0fdf4; border-color: #86efac; }
+  .grade-s4 .grade-badge { background: #dcfce7; color: #14532d; }
+  .grade-s4 .grade-dot { background: #22c55e; }
+  .grade-s4 .grade-name { color: #14532d; }
 
-.fn-s1 { background: var(--s1-bg); color: var(--s1-text); }
-.fn-s2 { background: var(--s2-bg); color: var(--s2-text); }
-.fn-s3 { background: var(--s3-bg); color: var(--s3-text); }
-.fn-s4 { background: var(--s4-bg); color: var(--s4-text); }
+  /* ── FULL TABLE ── */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--gray-200); }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead { background: var(--navy); color: var(--white); }
+  thead th { padding: 12px 14px; text-align: left; font-weight: 700; font-size: 13px; white-space: nowrap; }
+  tbody tr { border-bottom: 1px solid var(--gray-100); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--gray-50); }
+  td { padding: 11px 14px; vertical-align: top; }
+  td:first-child { font-weight: 500; color: var(--navy); }
 
-/* icon colors */
-.ic-blue   { background: var(--blue-bg);   color: var(--blue-text);   }
-.ic-purple { background: var(--purple-bg); color: var(--purple-text); }
-.ic-teal   { background: var(--teal-bg);   color: var(--teal-text);   }
-.ic-coral  { background: var(--coral-bg);  color: var(--coral-text);  }
-.ic-amber  { background: var(--amber-bg);  color: var(--amber-text);  }
-.ic-pink   { background: var(--pink-bg);   color: var(--pink-text);   }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; font-weight: 700; padding: 3px 10px; border-radius: 20px;
+    white-space: nowrap;
+  }
+  .badge-s1 { background: #fee2e2; color: #991b1b; }
+  .badge-s2 { background: #ffedd5; color: #92400e; }
+  .badge-s3 { background: #fef9c3; color: #713f12; }
+  .badge-s4 { background: #dcfce7; color: #14532d; }
 
-.t-blue   { background: var(--blue-bg);   color: var(--blue-text);   }
-.t-purple { background: var(--purple-bg); color: var(--purple-text); }
-.t-teal   { background: var(--teal-bg);   color: var(--teal-text);   }
-.t-coral  { background: var(--coral-bg);  color: var(--coral-text);  }
-.t-amber  { background: var(--amber-bg);  color: var(--amber-text);  }
-.t-pink   { background: var(--pink-bg);   color: var(--pink-text);   }
-.t-green  { background: var(--green-bg);  color: var(--green-text);  }
+  /* ── PROCEDURE ── */
+  .steps { display: flex; flex-direction: column; gap: 0; }
+  .step {
+    display: flex; gap: 1.5rem; align-items: flex-start;
+    padding: 1.5rem 0; border-bottom: 1px solid var(--gray-100);
+    position: relative;
+  }
+  .step:last-child { border-bottom: none; }
+  .step-num {
+    flex-shrink: 0;
+    width: 40px; height: 40px; border-radius: 50%;
+    background: var(--navy); color: var(--white);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Montserrat', sans-serif; font-weight: 900; font-size: 15px;
+    position: relative; z-index: 1;
+  }
+  .step-body { flex: 1; }
+  .step-title { font-weight: 700; font-size: 16px; color: var(--navy); margin-bottom: 0.3rem; }
+  .step-en { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--blue); margin-bottom: 0.5rem; }
+  .step-desc { font-size: 14px; color: var(--gray-600); line-height: 1.7; }
+  .step-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.6rem; }
+  .step-chip {
+    background: var(--blue-pale); color: var(--blue);
+    font-size: 12px; padding: 3px 10px; border-radius: 20px;
+    border: 1px solid rgba(37,99,235,0.2);
+  }
+
+  /* ── GENOMICS SPECIAL ── */
+  .genomics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; }
+  .genomics-card {
+    border-radius: var(--radius-md); padding: 1.25rem;
+    border: 1px solid var(--gray-200);
+  }
+  .genomics-card.danger { background: #fff5f5; border-color: #fca5a5; }
+  .genomics-card.warn   { background: #fff7ed; border-color: #fdba74; }
+  .genomics-card.mild   { background: #fefce8; border-color: #fde047; }
+  .file-type {
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700; font-size: 18px; margin-bottom: 0.4rem;
+  }
+  .genomics-card.danger .file-type { color: #991b1b; }
+  .genomics-card.warn   .file-type { color: #92400e; }
+  .genomics-card.mild   .file-type { color: #713f12; }
+  .file-desc { font-size: 13px; color: var(--gray-600); margin-bottom: 0.75rem; line-height: 1.6; }
+  .file-rule {
+    font-size: 12px; font-weight: 700; padding: 4px 0;
+    display: flex; align-items: flex-start; gap: 6px; line-height: 1.5;
+  }
+  .genomics-card.danger .file-rule { color: #991b1b; }
+  .genomics-card.warn   .file-rule { color: #92400e; }
+  .genomics-card.mild   .file-rule { color: #713f12; }
+
+  /* ── LAW TABLE ── */
+  .law-table td:nth-child(3) { text-align: center; }
+
+  /* ── PGHD ── */
+  .pghd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 1rem; }
+  .pghd-item {
+    background: var(--white); border: 1px solid var(--gray-200);
+    border-radius: var(--radius-md); padding: 1rem;
+    text-align: center;
+  }
+  .pghd-icon { font-size: 28px; margin-bottom: 0.5rem; }
+  .pghd-name { font-weight: 700; font-size: 14px; color: var(--navy); margin-bottom: 0.25rem; }
+  .pghd-en { font-size: 11px; color: var(--gray-400); font-family: 'IBM Plex Mono', monospace; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--navy); color: rgba(255,255,255,0.55);
+    padding: 2.5rem 1.5rem; text-align: center; font-size: 13px;
+  }
+  footer strong { color: rgba(255,255,255,0.85); }
+  footer a { color: var(--blue-light); text-decoration: none; }
+
+  /* ── MISC ── */
+  .note-box {
+    background: var(--blue-pale); border-left: 4px solid var(--blue);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 1rem 1.25rem; font-size: 14px; color: var(--navy);
+    margin-top: 1.5rem; line-height: 1.7;
+  }
+  .warn-box {
+    background: #fff5f5; border-left: 4px solid #ef4444;
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    padding: 1rem 1.25rem; font-size: 14px; color: #7f1d1d;
+    margin-top: 1rem; line-height: 1.7;
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 1rem; }
+    .nav-links { display: none; }
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .section { padding: 2.5rem 0; }
+    .container { padding: 0 1rem; }
+  }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="header-top">
-    <span class="header-title">의료 비정형 데이터 분류 가이드</span>
-    <span class="header-sub">Unstructured Medical Data Classification v1.0</span>
+<!-- NAV -->
+<nav>
+  <div class="nav-brand">MEDICAL<span>DATA</span></div>
+  <div class="nav-links">
+    <a href="#types" class="active">데이터 유형</a>
+    <a href="#sensitivity">민감도 등급</a>
+    <a href="#table">유형별 등급표</a>
+    <a href="#genomics">유전체 특례</a>
+    <a href="#procedure">처리 절차</a>
+    <a href="#law">법령 근거</a>
   </div>
-  <div class="tabs">
-    <button class="tab active" onclick="show('types',this)">비정형 데이터 유형</button>
-    <button class="tab" onclick="show('levels',this)">민감도 등급</button>
-    <button class="tab" onclick="show('table',this)">데이터별 등급표</button>
-    <button class="tab" onclick="show('process',this)">처리 절차</button>
-  </div>
-</div>
+  <div class="nav-badge">v2025.01</div>
+</nav>
 
-<div class="content">
-
-<!-- ─── 비정형 데이터 유형 ─── -->
-<div id="panel-types" class="panel active">
-  <p class="slabel">비정형 의료 데이터 6대 유형</p>
-
-  <div class="dtype-card">
-    <div class="dtype-header">
-      <div class="dtype-icon ic-blue">📋</div>
-      <div>
-        <div class="dtype-name">임상 텍스트</div>
-        <div class="dtype-en">Clinical Text · 자연어로 기록된 진료 기록</div>
-      </div>
-    </div>
-    <div class="tags">
-      <span class="tag t-blue">EMR 입력 소견</span>
-      <span class="tag t-blue">진료 상담 내용</span>
-      <span class="tag t-blue">수술 기록지</span>
-      <span class="tag t-blue">퇴원 요약지</span>
-      <span class="tag t-blue">간호 기록</span>
-      <span class="tag t-blue">의사 소견서</span>
-    </div>
-  </div>
-
-  <div class="dtype-card">
-    <div class="dtype-header">
-      <div class="dtype-icon ic-purple">🖼️</div>
-      <div>
-        <div class="dtype-name">의료 영상</div>
-        <div class="dtype-en">Medical Imaging · DICOM 포함 비구조화 영상 데이터</div>
-      </div>
-    </div>
-    <div class="tags">
-      <span class="tag t-purple">X-ray</span>
-      <span class="tag t-purple">CT</span>
-      <span class="tag t-purple">MRI</span>
-      <span class="tag t-purple">초음파</span>
-      <span class="tag t-purple">내시경 영상</span>
-      <span class="tag t-purple">병리 슬라이드</span>
-      <span class="tag t-purple">안저 사진</span>
-    </div>
-  </div>
-
-  <div class="dtype-card">
-    <div class="dtype-header">
-      <div class="dtype-icon ic-teal">〰️</div>
-      <div>
-        <div class="dtype-name">생체 신호 / 파형</div>
-        <div class="dtype-en">Biosignals · 시계열 센서 기반 연속 데이터</div>
-      </div>
-    </div>
-    <div class="tags">
-      <span class="tag t-teal">심전도 (ECG/EKG)</span>
-      <span class="tag t-teal">뇌파 (EEG)</span>
-      <span class="tag t-teal">근전도 (EMG)</span>
-      <span class="tag t-teal">혈압 파형</span>
-      <span class="tag t-teal">산소포화도 (SpO₂)</span>
-      <span class="tag t-teal">수면 다원검사</span>
-    </div>
-  </div>
-
-  <div class="dtype-card">
-    <div class="dtype-header">
-      <div class="dtype-icon ic-coral">🎤</div>
-      <div>
-        <div class="dtype-name">음성 / 영상 기록</div>
-        <div class="dtype-en">Audio &amp; Video · 녹음·녹화된 진료 및 상담 자료</div>
-      </div>
-    </div>
-    <div class="tags">
-      <span class="tag t-coral">진료 상담 녹음</span>
-      <span class="tag t-coral">수술 영상</span>
-      <span class="tag t-coral">재활 치료 영상</span>
-      <span class="tag t-coral">원격진료 녹화</span>
-      <span class="tag t-coral">호흡음 녹음</span>
-    </div>
-  </div>
-
-  <div class="dtype-card">
-    <div class="dtype-header">
-      <div class="dtype-icon ic-amber">🧬</div>
-      <div>
-        <div class="dtype-name">유전체 / 오믹스 데이터</div>
-        <div class="dtype-en">Genomics &amp; Omics · 시퀀싱 기반 대용량 분자 데이터</div>
-      </div>
-    </div>
-    <div class="tags">
-      <span class="tag t-amber">유전자 시퀀싱 (NGS)</span>
-      <span class="tag t-amber">SNP 데이터</span>
-      <span class="tag t-amber">전사체 (RNA-seq)</span>
-      <span class="tag t-amber">단백체</span>
-      <span class="tag t-amber">마이크로바이옴</span>
-    </div>
-  </div>
-
-  <div class="dtype-card">
-    <div class="dtype-header">
-      <div class="dtype-icon ic-pink">📁</div>
-      <div>
-        <div class="dtype-name">문서 / 행정 기록</div>
-        <div class="dtype-en">Documents &amp; Admin · 스캔·PDF 형태의 비정형 서류</div>
-      </div>
-    </div>
-    <div class="tags">
-      <span class="tag t-pink">처방전 (PDF/스캔)</span>
-      <span class="tag t-pink">동의서</span>
-      <span class="tag t-pink">보험청구 서류</span>
-      <span class="tag t-pink">의뢰서·회신서</span>
-      <span class="tag t-pink">건강검진 결과지</span>
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag">보건의료데이터 활용 가이드라인 기반</div>
+    <h1>의료 데이터 분류 &<br><span>민감 데이터 구분</span> 가이드</h1>
+    <div class="hero-sub">Unstructured Medical Data Classification · Sensitivity Framework · v2025.01</div>
+    <p class="hero-desc">
+      보건복지부·개인정보보호위원회 「보건의료데이터 활용 가이드라인」(2025.01.) 기반으로<br>
+      비정형 데이터 유형별 분류 기준과 민감도 등급 체계를 정리합니다.
+    </p>
+    <div class="hero-chips">
+      <span class="hero-chip">📋 개인정보보호법 제23조</span>
+      <span class="hero-chip">🏥 비정형 데이터 5유형</span>
+      <span class="hero-chip">🔴 민감도 4단계</span>
+      <span class="hero-chip">🧬 유전체 특례 기준</span>
+      <span class="hero-chip">⚙️ DRB 심의 절차</span>
     </div>
   </div>
 </div>
 
-<!-- ─── 민감도 등급 ─── -->
-<div id="panel-levels" class="panel">
-  <p class="slabel">4단계 민감도 등급 체계</p>
-  <div class="level-row">
-    <div class="level-card lc-s1">
-      <div class="level-badge">S1 · 최고</div>
-      <div class="level-name">극도 민감</div>
-      <div class="level-desc">개인 식별 가능 + 특별 민감 정보 결합. 유출 시 심각한 차별·낙인 우려</div>
+<!-- SECTION 1: 데이터 유형 -->
+<section class="section" id="types">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">01 · Data Types</div>
+      <h2 class="section-title">보건의료 <span>비정형 데이터</span> 5대 유형</h2>
+      <div class="divider"></div>
+      <p class="section-desc">
+        가이드라인은 보건의료 데이터를 <strong>정형(Structured)</strong>과 <strong>비정형(Unstructured)</strong>으로 구분합니다.
+        비정형 데이터는 고정된 형식 없이 이미지·텍스트·음성 등으로 존재하며, 처리 난이도가 높습니다.
+      </p>
     </div>
-    <div class="level-card lc-s2">
-      <div class="level-badge">S2 · 높음</div>
-      <div class="level-name">고도 민감</div>
-      <div class="level-desc">개인 식별 가능 의료 정보. 법적 보호 대상 (개인정보보호법·의료법)</div>
+
+    <!-- 정형 vs 비정형 비교 -->
+    <div class="table-wrap" style="margin-bottom: 2.5rem;">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:140px">구분</th>
+            <th>🗂️ 정형 데이터 (Structured)</th>
+            <th>📂 비정형 데이터 (Unstructured)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>정의</td>
+            <td>사전 정의된 스키마(행·열)로 저장</td>
+            <td>고정 형식 없이 텍스트·이미지·음성 등으로 존재</td>
+          </tr>
+          <tr>
+            <td>대표 예시</td>
+            <td>진단코드(KCD), 처방전, 검사수치, 청구 데이터</td>
+            <td>EMR 서술 텍스트, CT/MRI 영상, 음성 기록, 병리슬라이드</td>
+          </tr>
+          <tr>
+            <td>가명처리 난이도</td>
+            <td>상대적으로 용이 (값 치환·삭제·범주화)</td>
+            <td><strong>복잡</strong> — 형식 다양, 문맥 내 식별자 혼재</td>
+          </tr>
+          <tr>
+            <td>2025년 개정 특이사항</td>
+            <td>기존 표준 기법 유지</td>
+            <td>유형별 처리 시나리오 제공, 폐쇄환경 자율 수준 허용</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div class="level-card lc-s3">
-      <div class="level-badge">S3 · 중간</div>
-      <div class="level-name">일반 민감</div>
-      <div class="level-desc">가명·익명 처리 후에도 재식별 리스크 잔존. 보조적 통제 필요</div>
-    </div>
-    <div class="level-card lc-s4">
-      <div class="level-badge">S4 · 낮음</div>
-      <div class="level-name">공개·비식별</div>
-      <div class="level-desc">충분한 비식별 처리 완료 또는 공개 연구용. 기본 보안만 적용</div>
+
+    <!-- 5유형 카드 -->
+    <div class="type-grid">
+
+      <div class="type-card" style="--card-accent:#2563eb; --card-pale:#eff6ff;">
+        <div class="card-icon">🖼️</div>
+        <div class="card-label">Type 01 · Medical Imaging</div>
+        <div class="card-title">의료 영상</div>
+        <div class="card-en">DICOM 포함 비구조화 영상 데이터</div>
+        <div class="card-tags">
+          <span class="tag">CT</span><span class="tag">MRI</span><span class="tag">X-ray</span>
+          <span class="tag">초음파</span><span class="tag">내시경 영상</span>
+        </div>
+        <div class="note-box" style="margin-top:1rem; font-size:13px;">
+          <strong>식별 위험:</strong> DICOM 메타데이터(환자명·생년월일), 두부 CT 안면 구조<br>
+          <strong>처리:</strong> 메타태그 삭제·치환, De-facing(안면 제거)
+        </div>
+      </div>
+
+      <div class="type-card" style="--card-accent:#0d9488; --card-pale:#f0fdfa;">
+        <div class="card-icon">🔬</div>
+        <div class="card-label">Type 02 · Pathology</div>
+        <div class="card-title">병리 슬라이드</div>
+        <div class="card-en">Whole Slide Image (WSI)</div>
+        <div class="card-tags">
+          <span class="tag">디지털 조직 슬라이드</span><span class="tag">생검 이미지</span>
+        </div>
+        <div class="note-box" style="margin-top:1rem; font-size:13px; background:var(--teal-pale); border-color:var(--teal);">
+          <strong>식별 위험:</strong> 이미지 매칭 알고리즘에 의한 간접 재식별<br>
+          <strong>처리:</strong> 레이블·메타데이터 삭제, 폐쇄 분석환경 제공
+        </div>
+      </div>
+
+      <div class="type-card" style="--card-accent:#7c3aed; --card-pale:#f5f3ff;">
+        <div class="card-icon">📝</div>
+        <div class="card-label">Type 03 · Clinical Text</div>
+        <div class="card-title">자유입력 텍스트</div>
+        <div class="card-en">자연어로 기록된 임상 서술</div>
+        <div class="card-tags">
+          <span class="tag">의사 소견문</span><span class="tag">간호 기록</span>
+          <span class="tag">입원 경위</span><span class="tag">상담 기록</span>
+        </div>
+        <div class="note-box" style="margin-top:1rem; font-size:13px; background:#f5f3ff; border-color:#7c3aed;">
+          <strong>식별 위험:</strong> 이름·주소·연락처 직접 기술, 희귀 상병명<br>
+          <strong>처리:</strong> NER 모델 기반 식별자 탐지·마스킹, 날짜 일반화
+        </div>
+      </div>
+
+      <div class="type-card" style="--card-accent:#c00000; --card-pale:#fff5f5;">
+        <div class="card-icon">🧬</div>
+        <div class="card-label">Type 04 · Genomics ⚠️ 최고민감</div>
+        <div class="card-title">유전체 데이터</div>
+        <div class="card-en">NGS 시퀀싱 기반 분자 데이터</div>
+        <div class="card-tags">
+          <span class="tag">FASTQ</span><span class="tag">SAM/BAM</span>
+          <span class="tag">VCF</span><span class="tag">유전자 검사기록지</span>
+        </div>
+        <div class="warn-box" style="margin-top:1rem; font-size:13px;">
+          <strong>⚠️ FASTQ 원시데이터:</strong> 가명처리 불가 — 반드시 정보주체 동의 필수<br>
+          <strong>SAM·BAM·VCF:</strong> 희귀 변이 삭제 후 가명처리 가능
+        </div>
+      </div>
+
+      <div class="type-card" style="--card-accent:#d97706; --card-pale:#fffbeb;">
+        <div class="card-icon">🎤</div>
+        <div class="card-label">Type 05 · Audio & Video</div>
+        <div class="card-title">음성·영상 기록</div>
+        <div class="card-en">녹음·녹화된 진료 및 상담 자료</div>
+        <div class="card-tags">
+          <span class="tag">진료 상담 녹음</span><span class="tag">수술 영상</span>
+          <span class="tag">재활 영상</span><span class="tag">원격진료 녹화</span>
+        </div>
+        <div class="note-box" style="margin-top:1rem; font-size:13px; background:var(--orange-pale); border-color:var(--orange);">
+          <strong>식별 위험:</strong> 성문(Voice Print)·얼굴 등 생체정보 포함<br>
+          <strong>처리:</strong> STT 변환 후 텍스트 처리, 음성 변조, 얼굴 블러
+        </div>
+      </div>
+
     </div>
   </div>
+</section>
 
-  <p class="slabel">S1 극도 민감 — 해당 데이터 유형</p>
-  <div class="dtype-card">
-    <div class="tags">
-      <span class="tag t-coral">HIV/AIDS 진단 기록</span>
-      <span class="tag t-coral">정신건강·정신과 기록</span>
-      <span class="tag t-coral">약물 남용·중독 치료</span>
-      <span class="tag t-coral">성병 관련 기록</span>
-      <span class="tag t-coral">유전자 정보 (식별 가능)</span>
-      <span class="tag t-coral">수술·상담 녹화 (얼굴 노출)</span>
-      <span class="tag t-coral">임신·낙태 기록</span>
-      <span class="tag t-coral">진료 상담 녹음</span>
+<!-- SECTION 2: 민감도 등급 -->
+<section class="section section-alt" id="sensitivity">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">02 · Sensitivity Levels</div>
+      <h2 class="section-title"><span>개인식별 위험도</span> 3단계 분류</h2>
+      <div class="divider"></div>
+      <p class="section-desc">
+        가이드라인은 개인정보보호법 제23조의 '민감정보'와 보건의료 특성을 결합하여 위험도를 3단계로 구분합니다.
+        유전체·음성·영상 등 특수 유형은 별도 최고 민감도로 지정됩니다.
+      </p>
+    </div>
+
+    <!-- 법적 민감정보 -->
+    <div style="background: var(--navy); border-radius: var(--radius-lg); padding: 1.5rem 2rem; margin-bottom: 2rem; color: white;">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.12em; color:rgba(255,255,255,0.5); margin-bottom:0.75rem;">개인정보보호법 제23조 — 민감정보 법적 정의</div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:13px; padding:4px 12px; border-radius:20px;">건강·성생활 정보</span>
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:13px; padding:4px 12px; border-radius:20px;">유전정보</span>
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:13px; padding:4px 12px; border-radius:20px;">생체인식정보 (지문·홍채·음성·얼굴)</span>
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:13px; padding:4px 12px; border-radius:20px;">범죄경력·수사 정보</span>
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:13px; padding:4px 12px; border-radius:20px;">사상·신념·정치적 견해</span>
+        <span style="background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.2); color:rgba(255,255,255,0.85); font-size:13px; padding:4px 12px; border-radius:20px;">인종·민족 정보</span>
+      </div>
+      <div style="margin-top:0.8rem; font-size:13px; color:rgba(255,255,255,0.55);">
+        → 보건의료 데이터 대부분은 '건강·유전정보'에 해당 — 가명처리 또는 별도 동의 없이 제3자 제공 불가
+      </div>
+    </div>
+
+    <!-- 3단계 카드 -->
+    <div class="grade-grid">
+      <div class="grade-card grade-s1">
+        <div class="grade-badge"><span class="grade-dot"></span>위험도 높음</div>
+        <div class="grade-name">직접 식별자 포함</div>
+        <div class="grade-sub">개인 특정 가능 데이터</div>
+        <div class="grade-desc">
+          환자명, 주민등록번호, 의료기관 등록번호, 연락처, 주소,
+          FASTQ 유전체 원시데이터 등 직접 식별이 가능한 정보
+        </div>
+        <div class="warn-box" style="margin-top:0.8rem; font-size:12px;">
+          원칙적으로 수집·제공 금지 / 불가피시 삭제 또는 동의 취득
+        </div>
+      </div>
+
+      <div class="grade-card grade-s2">
+        <div class="grade-badge"><span class="grade-dot"></span>위험도 중간</div>
+        <div class="grade-name">간접 식별자 (준식별자)</div>
+        <div class="grade-sub">결합 시 재식별 가능</div>
+        <div class="grade-desc">
+          생년월일, 성별, 거주 시·군·구, 희귀질환명, 입원 날짜,
+          외래 방문 횟수 등 단독으로는 식별이 어렵지만 결합 시 위험한 정보
+        </div>
+        <div class="note-box" style="margin-top:0.8rem; font-size:12px; background:#fff7ed; border-color:#f97316;">
+          일반화·날짜이동·범주화 등 가명처리 필수 / 결합 시 재평가
+        </div>
+      </div>
+
+      <div class="grade-card grade-s4" style="border-color:#86efac;">
+        <div class="grade-badge"><span class="grade-dot"></span>위험도 낮음</div>
+        <div class="grade-name">비식별 처리된 정보</div>
+        <div class="grade-sub">가명처리 완료 데이터</div>
+        <div class="grade-desc">
+          가명처리 완료된 진단코드, 처방정보, 검사수치,
+          집계·통계 결과 등 직접 식별 불가 수준으로 처리된 정보
+        </div>
+        <div class="note-box" style="margin-top:0.8rem; font-size:12px; background:#f0fdf4; border-color:#22c55e;">
+          안전조치 하 연구·통계 목적 활용 허용 / 반출 시 DRB 심의
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SECTION 3: 유형별 등급표 -->
+<section class="section" id="table">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">03 · Classification Table</div>
+      <h2 class="section-title">데이터 유형별 <span>민감도 등급표</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">
+        가이드라인에 근거한 주요 보건의료 데이터 유형별 민감도 등급과 처리 원칙입니다.
+      </p>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>데이터 유형</th>
+            <th>세부 예시</th>
+            <th>등급</th>
+            <th>주요 식별 위험 요소</th>
+            <th>처리 방법</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>유전체 원시 (FASTQ)</td>
+            <td>전체 염기서열 원시 데이터</td>
+            <td><span class="badge badge-s1">🔴 최고위험</span></td>
+            <td>전체 유전정보 복원 가능</td>
+            <td>가명처리 불가 — 정보주체 동의 필수</td>
+          </tr>
+          <tr>
+            <td>진료 상담 녹음</td>
+            <td>의사-환자 대화 오디오</td>
+            <td><span class="badge badge-s1">🔴 최고위험</span></td>
+            <td>성문(Voice Print) + 민감 내용 동시 포함</td>
+            <td>STT 변환 후 텍스트 처리, 음성 변조</td>
+          </tr>
+          <tr>
+            <td>수술·재활 영상</td>
+            <td>얼굴·신체 노출 포함 영상</td>
+            <td><span class="badge badge-s1">🔴 최고위험</span></td>
+            <td>얼굴 인식으로 직접 식별 가능</td>
+            <td>얼굴 블러·모자이크 처리 필수</td>
+          </tr>
+          <tr>
+            <td>정신과·심리 기록</td>
+            <td>상담 내용, 진단 소견, 입원 기록</td>
+            <td><span class="badge badge-s1">🔴 최고위험</span></td>
+            <td>낙인·차별 위험, 정신건강복지법 §42</td>
+            <td>IRB 심의 필수, 별도 동의 취득</td>
+          </tr>
+          <tr>
+            <td>일반 진료 기록 (EMR)</td>
+            <td>소견문, 수술 기록, 퇴원 요약</td>
+            <td><span class="badge badge-s2">🟠 높은위험</span></td>
+            <td>직접 기재된 개인정보, 상병명</td>
+            <td>NER 기반 식별자 마스킹, 날짜 일반화</td>
+          </tr>
+          <tr>
+            <td>의료 영상 (메타 포함)</td>
+            <td>CT, MRI, X-ray + 환자 DICOM 헤더</td>
+            <td><span class="badge badge-s2">🟠 높은위험</span></td>
+            <td>DICOM 헤더 내 직접 식별자 포함</td>
+            <td>메타데이터 삭제·치환, De-facing</td>
+          </tr>
+          <tr>
+            <td>병리 슬라이드 (WSI)</td>
+            <td>조직 생검 이미지</td>
+            <td><span class="badge badge-s2">🟠 높은위험</span></td>
+            <td>이미지 매칭 기반 간접 재식별</td>
+            <td>레이블·메타 삭제, 폐쇄 환경 분석</td>
+          </tr>
+          <tr>
+            <td>유전체 (SAM/BAM/VCF)</td>
+            <td>정렬 염기서열, 변이 정보</td>
+            <td><span class="badge badge-s2">🟠 높은위험</span></td>
+            <td>희귀 변이로 개인 특정 가능</td>
+            <td>희귀 변이 및 메타데이터 삭제 후 가명처리</td>
+          </tr>
+          <tr>
+            <td>심전도 원본 (ECG)</td>
+            <td>파형 + 환자 ID 포함</td>
+            <td><span class="badge badge-s2">🟠 높은위험</span></td>
+            <td>심장 질환 이력 역추적 가능</td>
+            <td>환자 ID 삭제, 날짜 이동, 잡음 추가</td>
+          </tr>
+          <tr>
+            <td>처방전 (스캔)</td>
+            <td>손글씨·인쇄 처방 PDF</td>
+            <td><span class="badge badge-s2">🟠 높은위험</span></td>
+            <td>투약 이력 = 진단 간접 노출</td>
+            <td>OCR 후 식별자 마스킹, 의약품명 일반화</td>
+          </tr>
+          <tr>
+            <td>가명처리 임상 텍스트</td>
+            <td>NER 마스킹 완료 소견문</td>
+            <td><span class="badge badge-s3">🟡 중간위험</span></td>
+            <td>결합 시 재식별 위험 잔존</td>
+            <td>결합 시 재평가, DRB 심의 후 활용</td>
+          </tr>
+          <tr>
+            <td>유전체 (연구용 익명)</td>
+            <td>집단 GWAS, 공개 데이터셋</td>
+            <td><span class="badge badge-s3">🟡 중간위험</span></td>
+            <td>재식별 기술 발전으로 주의 필요</td>
+            <td>집단 수준 집계, 개인 연계 차단</td>
+          </tr>
+          <tr>
+            <td>집계·통계 보고서</td>
+            <td>기관 단위 공개 통계</td>
+            <td><span class="badge badge-s4">🟢 낮은위험</span></td>
+            <td>개인 식별 불가 수준</td>
+            <td>기본 안전조치 후 활용 허용</td>
+          </tr>
+          <tr>
+            <td>합성 (Synthetic) 데이터</td>
+            <td>GAN 생성 모의 임상 기록</td>
+            <td><span class="badge badge-s4">🟢 낮은위험</span></td>
+            <td>원본 연계 없을 때 식별 불가</td>
+            <td>생성 방법론 문서화, 비식별 검증 완료</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
+</section>
 
-  <p class="slabel">S2 고도 민감 — 해당 데이터 유형</p>
-  <div class="dtype-card">
-    <div class="tags">
-      <span class="tag t-amber">일반 EMR/진료 기록</span>
-      <span class="tag t-amber">의료 영상 (환자 메타 포함)</span>
-      <span class="tag t-amber">생체 신호 원본</span>
-      <span class="tag t-amber">처방·투약 기록</span>
-      <span class="tag t-amber">보험 청구 서류</span>
-      <span class="tag t-amber">병리 슬라이드</span>
+<!-- SECTION 4: 유전체 특례 -->
+<section class="section section-alt" id="genomics">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">04 · Genomics Special Provision</div>
+      <h2 class="section-title">유전체 데이터 <span>파일 형식별 특례</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">
+        가이드라인은 유전체 데이터를 <strong>최고 민감도 카테고리</strong>로 지정하고, 파일 형식에 따라 처리 방식을 구체화합니다.
+      </p>
     </div>
-  </div>
-
-  <p class="slabel">S3 / S4 — 해당 데이터 유형</p>
-  <div class="dtype-card">
-    <div class="tags">
-      <span class="tag t-blue">가명 처리 임상 텍스트</span>
-      <span class="tag t-blue">메타 제거 영상 데이터</span>
-      <span class="tag t-blue">유전체 (연구용 익명)</span>
-      <span class="tag t-green">집계 통계</span>
-      <span class="tag t-green">공개 연구 데이터셋</span>
-      <span class="tag t-green">익명 합성 데이터</span>
-    </div>
-  </div>
-</div>
-
-<!-- ─── 데이터별 등급표 ─── -->
-<div id="panel-table" class="panel">
-  <p class="slabel">비정형 의료 데이터 유형별 민감도 등급</p>
-  <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:22%">데이터 유형</th>
-          <th style="width:26%">세부 예시</th>
-          <th style="width:13%">등급</th>
-          <th>주요 근거</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>진료 기록 (텍스트)</strong></td>
-          <td>EMR 소견, 수술 기록, 퇴원 요약</td>
-          <td><span class="badge badge-s2">S2 고도</span></td>
-          <td>의료법 §22, 개인정보보호법 §23 민감정보</td>
-        </tr>
-        <tr>
-          <td><strong>정신과·심리 기록</strong></td>
-          <td>상담 내용, 진단 소견, 입원 기록</td>
-          <td><span class="badge badge-s1">S1 극도</span></td>
-          <td>낙인·차별 위험, 정신건강복지법 §42 비밀유지</td>
-        </tr>
-        <tr>
-          <td><strong>일반 의료 영상</strong></td>
-          <td>CT, MRI, X-ray (환자 메타 포함)</td>
-          <td><span class="badge badge-s2">S2 고도</span></td>
-          <td>DICOM 헤더 내 직접 식별자 포함</td>
-        </tr>
-        <tr>
-          <td><strong>병리 슬라이드</strong></td>
-          <td>조직 생검 이미지</td>
-          <td><span class="badge badge-s2">S2 고도</span></td>
-          <td>암·희귀질환 진단 정보 포함</td>
-        </tr>
-        <tr>
-          <td><strong>심전도 (ECG)</strong></td>
-          <td>원본 파형 + 환자 ID 포함</td>
-          <td><span class="badge badge-s2">S2 고도</span></td>
-          <td>심장 질환 이력 역추적 가능</td>
-        </tr>
-        <tr>
-          <td><strong>생체신호 (익명)</strong></td>
-          <td>메타 제거 후 집계 파형</td>
-          <td><span class="badge badge-s3">S3 일반</span></td>
-          <td>재식별 가능성 잔존 — 보조 통제 필요</td>
-        </tr>
-        <tr>
-          <td><strong>유전자 정보 (식별 가능)</strong></td>
-          <td>개인 연계 NGS, SNP 데이터</td>
-          <td><span class="badge badge-s1">S1 극도</span></td>
-          <td>개인정보보호법 §23, 생명윤리법 §15 유전정보 보호</td>
-        </tr>
-        <tr>
-          <td><strong>유전체 (연구용 익명)</strong></td>
-          <td>집단 GWAS, 공개 데이터셋</td>
-          <td><span class="badge badge-s3">S3 일반</span></td>
-          <td>재식별 기술 발전으로 주의 필요</td>
-        </tr>
-        <tr>
-          <td><strong>진료 상담 녹음</strong></td>
-          <td>의사-환자 대화 오디오</td>
-          <td><span class="badge badge-s1">S1 극도</span></td>
-          <td>음성 생체인식 + 민감 내용 동시 포함</td>
-        </tr>
-        <tr>
-          <td><strong>수술·재활 영상</strong></td>
-          <td>얼굴·신체 노출 포함 영상</td>
-          <td><span class="badge badge-s1">S1 극도</span></td>
-          <td>얼굴 인식으로 직접 식별 가능</td>
-        </tr>
-        <tr>
-          <td><strong>처방전 (스캔)</strong></td>
-          <td>손글씨·인쇄 처방 PDF</td>
-          <td><span class="badge badge-s2">S2 고도</span></td>
-          <td>투약 이력 = 진단 간접 노출</td>
-        </tr>
-        <tr>
-          <td><strong>보험 청구 서류</strong></td>
-          <td>EDI·PDF 청구명세서</td>
-          <td><span class="badge badge-s2">S2 고도</span></td>
-          <td>상병명·행위코드 포함</td>
-        </tr>
-        <tr>
-          <td><strong>집계 통계 보고서</strong></td>
-          <td>기관 단위 공개 통계</td>
-          <td><span class="badge badge-s4">S4 공개</span></td>
-          <td>개인 식별 불가 수준 충족 시</td>
-        </tr>
-        <tr>
-          <td><strong>합성 (Synthetic) 데이터</strong></td>
-          <td>GAN 생성 모의 임상 기록</td>
-          <td><span class="badge badge-s4">S4 공개</span></td>
-          <td>원본 연계 없을 때 — 생성 방법 검증 조건</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
-</div>
-
-<!-- ─── 처리 절차 ─── -->
-<div id="panel-process" class="panel">
-  <p class="slabel">민감도 등급별 처리 요건</p>
-  <div class="flow">
-    <div class="flow-row">
-      <div class="flow-spine">
-        <div class="flow-node fn-s1">S1</div>
-        <div class="flow-spine-line"></div>
+    <div class="genomics-grid">
+      <div class="genomics-card danger">
+        <div class="file-type">FASTQ</div>
+        <div class="file-desc">전체 염기서열 원시 데이터. 개인의 전체 유전정보를 담고 있어 가명처리 기술로도 재식별 위험을 차단할 수 없습니다.</div>
+        <div class="file-rule">⛔ 가명처리 불가 — 반드시 정보주체의 명시적 동의 취득 후에만 처리</div>
       </div>
-      <div class="flow-body">
-        <div class="flow-title">극도 민감 — 최고 수준 통제</div>
-        <div class="flow-desc">암호화(AES-256 이상) 저장 및 전송 · 접근자 최소화(Need-to-know) · 접근 로그 전수 감사 · IRB/DPO 사전 승인 필수 · 국외 이전 원칙 금지 · 데이터 처리 목적 외 사용 엄금</div>
+      <div class="genomics-card warn">
+        <div class="file-type">SAM / BAM</div>
+        <div class="file-desc">참조 게놈에 정렬된 염기서열 + 메타데이터. 희귀 변이 보유자는 집단 내에서 개인 특정이 가능합니다.</div>
+        <div class="file-rule">⚠️ 희귀 변이 염기서열 및 메타데이터 삭제 후 가명처리 가능</div>
       </div>
-    </div>
-    <div class="flow-row">
-      <div class="flow-spine">
-        <div class="flow-node fn-s2">S2</div>
-        <div class="flow-spine-line"></div>
+      <div class="genomics-card warn">
+        <div class="file-type">VCF</div>
+        <div class="file-desc">변이 정보(Variant Call Format). 개인 고유의 희귀 변이가 포함되어 있어 메타데이터 제거가 필수입니다.</div>
+        <div class="file-rule">⚠️ 개인 식별 가능한 희귀 변이·메타데이터 삭제 후 가명처리 가능</div>
       </div>
-      <div class="flow-body">
-        <div class="flow-title">고도 민감 — 강화 통제</div>
-        <div class="flow-desc">암호화 저장 · 역할 기반 접근 통제(RBAC) · 동의서 확보 · 접근 로그 정기 감사 · 가명 처리 후 2차 활용 가능 · 보존 기간 법정 기한 준수</div>
-      </div>
-    </div>
-    <div class="flow-row">
-      <div class="flow-spine">
-        <div class="flow-node fn-s3">S3</div>
-        <div class="flow-spine-line"></div>
-      </div>
-      <div class="flow-body">
-        <div class="flow-title">일반 민감 — 표준 통제</div>
-        <div class="flow-desc">기본 암호화 · 접근 통제 · 재식별 위험 평가 주기적 실시 · 연구·분석 목적 사용 시 데이터 관리자 승인</div>
-      </div>
-    </div>
-    <div class="flow-row">
-      <div class="flow-spine">
-        <div class="flow-node fn-s4">S4</div>
-      </div>
-      <div class="flow-body">
-        <div class="flow-title">공개·비식별 — 기본 보안</div>
-        <div class="flow-desc">일반 접근 통제 · 출처 기록 유지 · 합성 데이터는 생성 방법론 문서화 · 공개 전 비식별 검증 완료 확인</div>
+      <div class="genomics-card mild">
+        <div class="file-type">검사기록지</div>
+        <div class="file-desc">유전자 검사 소견 및 결과 텍스트. 일반 텍스트 형식이므로 NER 기반 식별자 탐지 처리가 가능합니다.</div>
+        <div class="file-rule">🔶 NER 기반 식별자 마스킹, 희귀 질환명 일반화 후 처리 가능</div>
       </div>
     </div>
   </div>
+</section>
 
-  <p class="slabel">관련 법령 및 가이드라인</p>
-  <div class="tbl-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th style="width:34%">법령 / 가이드라인</th>
-          <th>핵심 조항</th>
-          <th style="width:20%">적용 등급</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td><strong>개인정보보호법</strong></td>
-          <td>§23 민감정보 처리 제한</td>
-          <td><span class="badge badge-s1">S1</span> <span class="badge badge-s2">S2</span></td>
-        </tr>
-        <tr>
-          <td><strong>의료법</strong></td>
-          <td>§22 진료기록 작성·보존, §19 비밀누설 금지</td>
-          <td><span class="badge badge-s2">S2</span></td>
-        </tr>
-        <tr>
-          <td><strong>생명윤리 및 안전에 관한 법률</strong></td>
-          <td>§15 유전정보 제공·활용 동의</td>
-          <td><span class="badge badge-s1">S1</span></td>
-        </tr>
-        <tr>
-          <td><strong>정신건강복지법</strong></td>
-          <td>§42 비밀유지 의무</td>
-          <td><span class="badge badge-s1">S1</span></td>
-        </tr>
-        <tr>
-          <td><strong>보건의료 데이터 활용 가이드라인</strong><small>보건복지부</small></td>
-          <td>가명·익명 처리 기준</td>
-          <td><span class="badge badge-s3">S3</span> <span class="badge badge-s4">S4</span></td>
-        </tr>
-        <tr>
-          <td><strong>의료분야 가명처리 가이드라인</strong><small>개인정보보호위원회</small></td>
-          <td>식별자 목록 및 처리 절차</td>
-          <td><span class="badge badge-s2">S2</span> <span class="badge badge-s3">S3</span></td>
-        </tr>
-      </tbody>
-    </table>
+<!-- SECTION 5: 처리 절차 -->
+<section class="section" id="procedure">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">05 · Processing Procedure</div>
+      <h2 class="section-title">가명처리 <span>6단계 표준 절차</span></h2>
+      <div class="divider"></div>
+      <p class="section-desc">
+        가이드라인이 제시하는 DRB 심의 포함 표준 처리 절차입니다.
+        폐쇄 분석환경에서는 합리적 수준의 자율 처리가 허용됩니다.
+      </p>
+    </div>
+
+    <!-- 처리 기법 표 -->
+    <div style="margin-bottom:2.5rem;">
+      <h3 style="font-size:17px; font-weight:700; color:var(--navy); margin-bottom:1rem;">주요 가명처리 기법</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>기법</th><th>설명</th><th>적용 데이터</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>일반화 (Generalization)</td><td>구체적 값을 더 넓은 범위로 변환</td><td>생년월일 → 연령대, 시·구 → 광역시</td></tr>
+            <tr><td>날짜 이동 (Date Shifting)</td><td>날짜를 일정 범위 내 무작위 이동</td><td>입원일, 수술일, 외래 방문일</td></tr>
+            <tr><td>삭제 / 마스킹</td><td>직접 식별자 제거 또는 *** 처리</td><td>환자명, 주민등록번호, 연락처</td></tr>
+            <tr><td>값 치환 (Substitution)</td><td>실제 값을 가상의 동등한 값으로 교체</td><td>병원 ID, 의사 코드</td></tr>
+            <tr><td>잡음 추가 (Noise Addition)</td><td>수치형 데이터에 통계적 잡음 삽입</td><td>혈압, 체중, 혈당, 검사 수치</td></tr>
+            <tr><td>NER 마스킹 (텍스트 전용)</td><td>개체명 인식 모델로 식별자 자동 탐지·치환</td><td>의무기록 자유텍스트, 소견문</td></tr>
+            <tr><td>De-facing (영상 전용)</td><td>두부 CT/MRI 등 안면 부위 자동 제거</td><td>두부 DICOM 영상</td></tr>
+            <tr><td>음성 변조 (음성 전용)</td><td>Pitch Shifting 등 생체음성 특징 변환</td><td>진료 상담 녹음, 음성 기록</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="step-title">사전 검토</div>
+          <div class="step-en">Pre-assessment</div>
+          <div class="step-desc">활용 목적·범위 확정, 법적 근거 확인 (연구·통계·공익 목적 여부 판단)</div>
+          <div class="step-chips"><span class="step-chip">목적 명확화</span><span class="step-chip">법적 근거</span><span class="step-chip">IRB 검토 여부</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="step-title">위험도 평가</div>
+          <div class="step-en">Risk Assessment</div>
+          <div class="step-desc">직접 식별자·준식별자·민감정보 항목별 개인식별 위험성 검토표 작성</div>
+          <div class="step-chips"><span class="step-chip">직접 식별자 목록화</span><span class="step-chip">준식별자 분석</span><span class="step-chip">재식별 위험 평가</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="step-title">가명처리</div>
+          <div class="step-en">Pseudonymization</div>
+          <div class="step-desc">위험도 평가 결과에 따라 적정 기법 선택 및 적용 (처리 자유도 부여, 책임 부담)</div>
+          <div class="step-chips"><span class="step-chip">NER 마스킹</span><span class="step-chip">De-facing</span><span class="step-chip">날짜 이동</span><span class="step-chip">일반화</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="step-title">DRB 심의</div>
+          <div class="step-en">Data Review Board</div>
+          <div class="step-desc">데이터심의위원회(Data Review Board) 가명처리 적정성 검토. 내부관리계획 내 구성·운영</div>
+          <div class="step-chips"><span class="step-chip">적정성 검토</span><span class="step-chip">외부위원 권장</span><span class="step-chip">심의 기록 보존</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="step-title">안전조치 적용</div>
+          <div class="step-en">Security Measures</div>
+          <div class="step-desc">접근 통제, 암호화(AES-256), 폐쇄 분석환경(망 분리) 설정</div>
+          <div class="step-chips"><span class="step-chip">암호화</span><span class="step-chip">접근 통제</span><span class="step-chip">망 분리</span><span class="step-chip">로그 감사</span></div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">6</div>
+        <div class="step-body">
+          <div class="step-title">반출심사</div>
+          <div class="step-en">Data Export Review</div>
+          <div class="step-desc">반출심사위원회(3인 이상) 검토 후 데이터 제공. 반복 결합 시 서면 간소화 가능</div>
+          <div class="step-chips"><span class="step-chip">3인 이상 구성</span><span class="step-chip">개인정보 경력자 필수</span><span class="step-chip">서면 승인</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="note-box" style="margin-top:2rem;">
+      <strong>폐쇄 분석환경 특례 (2025년 개정):</strong> 망 분리·외부 반출 불가 시스템에서 연구를 수행할 경우,
+      연구 목적 달성을 고려한 합리적 수준의 가명처리를 허용하여 현장 자율성을 부여합니다.
+      단, 결과물(분석 결과·모델) 반출 시에는 반출심사 위원회 승인이 필수입니다.
+    </div>
   </div>
-</div>
+</section>
 
-</div>
+<!-- SECTION 6: 법령 근거 -->
+<section class="section section-alt" id="law">
+  <div class="container">
+    <div class="section-header">
+      <div class="section-eyebrow">06 · Legal Framework</div>
+      <h2 class="section-title">관련 <span>법령 및 가이드라인</span></h2>
+      <div class="divider"></div>
+    </div>
+    <div class="table-wrap">
+      <table class="law-table">
+        <thead>
+          <tr><th>법령 / 가이드라인</th><th>핵심 조항</th><th>적용 등급</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>개인정보보호법</td>
+            <td>§23 민감정보 처리 제한 / §28조의2~7 가명정보 처리 특례</td>
+            <td><span class="badge badge-s1">🔴 최고</span> <span class="badge badge-s2">🟠 높음</span></td>
+          </tr>
+          <tr>
+            <td>의료법</td>
+            <td>§22 진료기록 작성·보존 / §19 비밀누설 금지 / §21 열람·제공 제한</td>
+            <td><span class="badge badge-s2">🟠 높음</span></td>
+          </tr>
+          <tr>
+            <td>생명윤리 및 안전에 관한 법률</td>
+            <td>§15 유전정보 제공·활용 동의 / IRB 심의, 익명화 기준</td>
+            <td><span class="badge badge-s1">🔴 최고</span></td>
+          </tr>
+          <tr>
+            <td>정신건강복지법</td>
+            <td>§42 비밀유지 의무</td>
+            <td><span class="badge badge-s1">🔴 최고</span></td>
+          </tr>
+          <tr>
+            <td>보건의료기본법</td>
+            <td>§4·§53 보건의료정보 관리·활용 근거</td>
+            <td><span class="badge badge-s2">🟠 높음</span> <span class="badge badge-s3">🟡 중간</span></td>
+          </tr>
+          <tr>
+            <td>보건의료데이터 활용 가이드라인 (보건복지부, 2025.01.)</td>
+            <td>비정형 데이터 가명처리 절차, PGHD 표준, 폐쇄환경 특례</td>
+            <td><span class="badge badge-s3">🟡 중간</span> <span class="badge badge-s4">🟢 낮음</span></td>
+          </tr>
+          <tr>
+            <td>의료분야 가명처리 가이드라인 (개인정보보호위원회)</td>
+            <td>식별자 목록 및 처리 절차, DRB 운영 기준</td>
+            <td><span class="badge badge-s2">🟠 높음</span> <span class="badge badge-s3">🟡 중간</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- PGHD -->
+    <div style="margin-top:3rem;">
+      <h3 style="font-size:17px; font-weight:700; color:var(--navy); margin-bottom:0.5rem;">📱 개인생성건강데이터(PGHD) — 2025년 신규 편입</h3>
+      <p style="font-size:14px; color:var(--gray-600); margin-bottom:1.25rem;">
+        2025년 1월 개정 가이드라인은 웨어러블·모바일 앱 기반 PGHD에 대한 교류·활용 표준을 최초로 수록하였습니다.
+        건강 상태를 추론할 수 있는 PGHD는 민감정보로 간주하여 동일한 가명처리 원칙이 적용됩니다.
+      </p>
+      <div class="pghd-grid">
+        <div class="pghd-item">
+          <div class="pghd-icon">👟</div>
+          <div class="pghd-name">걸음 수</div>
+          <div class="pghd-en">Step Count</div>
+        </div>
+        <div class="pghd-item">
+          <div class="pghd-icon">❤️</div>
+          <div class="pghd-name">심박수</div>
+          <div class="pghd-en">Heart Rate</div>
+        </div>
+        <div class="pghd-item">
+          <div class="pghd-icon">😴</div>
+          <div class="pghd-name">수면 패턴</div>
+          <div class="pghd-en">Sleep Pattern</div>
+        </div>
+        <div class="pghd-item">
+          <div class="pghd-icon">🩸</div>
+          <div class="pghd-name">혈압</div>
+          <div class="pghd-en">Blood Pressure</div>
+        </div>
+        <div class="pghd-item">
+          <div class="pghd-icon">💉</div>
+          <div class="pghd-name">연속 혈당</div>
+          <div class="pghd-en">Continuous Glucose</div>
+        </div>
+      </div>
+      <div class="note-box" style="margin-top:1rem; font-size:13px;">
+        HL7 FHIR 기반 데이터 교류 체계 및 시스템 구현 방법 표준 제시 포함
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <strong>의료 데이터 분류 및 민감 데이터 구분 가이드</strong><br>
+  <span style="margin-top:6px; display:block;">
+    4조 | 김승욱·김지민·안서영·이지윤·장재민·정태건 | 2025.05.<br>
+    참고: 보건복지부·개인정보보호위원회, 「보건의료데이터 활용 가이드라인」(2025.01.)
+  </span>
+</footer>
 
 <script>
-function show(id, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-  document.getElementById('panel-' + id).classList.add('active');
-  btn.classList.add('active');
-}
+  const links = document.querySelectorAll('.nav-links a');
+  const sections = document.querySelectorAll('section[id], div[id]');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        links.forEach(l => l.classList.remove('active'));
+        const target = document.querySelector(`.nav-links a[href="#${entry.target.id}"]`);
+        if (target) target.classList.add('active');
+      }
+    });
+  }, { threshold: 0.3 });
+
+  sections.forEach(s => observer.observe(s));
 </script>
+
 </body>
 </html>
